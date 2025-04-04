@@ -445,7 +445,7 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7H9ZA2i83QLo6aZKzDU8moahSoaSu9cM&callback=initMap" async defer></script>
 
 </head>
 <body>
@@ -535,7 +535,7 @@
             
             <div class="gallery-grid">
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Taj Mahal, Agra" class="gallery-img">
+                    <img src="taj mahal.jpg" alt="Taj Mahal, Agra" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Taj Mahal</h4>
                         <p>Agra, Uttar Pradesh</p>
@@ -544,7 +544,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Jaipur City Palace" class="gallery-img">
+                    <img src="jaipur city palace.jpg" alt="Jaipur City Palace" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>City Palace</h4>
                         <p>Jaipur, Rajasthan</p>
@@ -553,7 +553,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Varanasi Ghats" class="gallery-img">
+                    <img src="Varanasi Ghats.jpg" alt="Varanasi Ghats" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Varanasi Ghats</h4>
                         <p>Varanasi, Uttar Pradesh</p>
@@ -562,7 +562,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Mysore Palace" class="gallery-img">
+                    <img src="Mysore Palace.jpg" alt="Mysore Palace" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Mysore Palace</h4>
                         <p>Mysore, Karnataka</p>
@@ -571,7 +571,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Amber Fort" class="gallery-img">
+                    <img src="Amber Fort.jpg" alt="Amber Fort" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Amber Fort</h4>
                         <p>Jaipur, Rajasthan</p>
@@ -580,7 +580,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Hawa Mahal" class="gallery-img">
+                    <img src="Hawa Mahal.jpg" alt="Hawa Mahal" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Hawa Mahal</h4>
                         <p>Jaipur, Rajasthan</p>
@@ -589,7 +589,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Meenakshi Temple" class="gallery-img">
+                    <img src="Meenakshi Temple.jpg" alt="Meenakshi Temple" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Meenakshi Temple</h4>
                         <p>Madurai, Tamil Nadu</p>
@@ -598,7 +598,7 @@
                 </div>
                 
                 <div class="gallery-item">
-                    <img src="/api/placeholder/400/300" alt="Gateway of India" class="gallery-img">
+                    <img src="Gateway of India.jpg" alt="Gateway of India" class="gallery-img">
                     <div class="gallery-caption">
                         <h4>Gateway of India</h4>
                         <p>Mumbai, Maharashtra</p>
@@ -716,7 +716,7 @@
             entries.forEach(entry => {
                 const entryElement = document.createElement('div');
                 entryElement.className = 'entry';
-                entryElement.id = entry-${entry.id};
+                entryElement.id = `entry-${entry.id}`;
                 
                 // Create star rating HTML
                 let starsHtml = '';
@@ -864,103 +864,86 @@
             }
         };
 
-        // AI Assistant functionality
-        askButton.addEventListener('click', handleAskQuestion);
-        userQuestion.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleAskQuestion();
-            }
+        // Event listeners
+askButton.addEventListener('click', handleAskQuestion);
+userQuestion.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        handleAskQuestion();
+    }
+});
+
+// Function to handle asking a question
+function handleAskQuestion() {
+    const question = userQuestion.value.trim();
+    if (!question) return;
+
+    addMessage(question, 'user');
+    userQuestion.value = '';
+
+    const loadingMessage = document.createElement('div');
+    loadingMessage.className = 'message bot-message';
+    loadingMessage.innerHTML = '<div class="loading"></div> Thinking...';
+    chatContainer.appendChild(loadingMessage);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    callAIApi(question)
+        .then(response => {
+            chatContainer.removeChild(loadingMessage);
+            addMessage(response, 'bot');
+        })
+        .catch(error => {
+            chatContainer.removeChild(loadingMessage);
+            addMessage("Sorry, I couldn't process your request at the moment. Please try again later.", 'bot');
+            console.error('Error calling AI API:', error);
+        });
+}
+
+// Function to call AI API
+async function callAIApi(question) {
+    const API_KEY = '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';
+    const API_URL = 'https://platform.openai.com/api-keys';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-3.5-turbo',
+                messages: [
+                    { role: 'system', content: 'You are a helpful travel assistant providing concise advice about destinations, travel tips, and recommendations.' },
+                    { role: 'user', content: question }
+                ],
+                max_tokens: 150,
+                temperature: 0.7
+            })
         });
 
-        function handleAskQuestion() {
-            const question = userQuestion.value.trim();
-            if (!question) return;
-            
-            // Add user message to chat
-            addMessage(question, 'user');
-            
-            // Clear input
-            userQuestion.value = '';
-            
-            // Add loading indicator
-            const loadingMessage = document.createElement('div');
-            loadingMessage.className = 'message bot-message';
-            loadingMessage.innerHTML = '<div class="loading"></div> Thinking...';
-            chatContainer.appendChild(loadingMessage);
-            
-            // Scroll to bottom of chat
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Simulate AI response (in a real app, you would call an API here)
-            setTimeout(() => {
-                // Remove loading indicator
-                chatContainer.removeChild(loadingMessage);
-                
-                // Get AI response
-                const response = getAIResponse(question);
-                
-                // Add AI response to chat
-                addMessage(response, 'bot');
-            }, 1500);
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("API error:", data);
+            throw new Error(data.error?.message || 'API request failed');
         }
 
-        function addMessage(text, sender) {
-            const messageElement = document.createElement('div');
-            messageElement.className = message ${sender}-message;
-            messageElement.textContent = text;
-            
-            chatContainer.appendChild(messageElement);
-            
-            // Scroll to bottom of chat
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+        return data.choices[0].message.content.trim();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+    }
+}
 
-        // Simulated AI responses - in a real app, you would use an API
-        function getAIResponse(question) {
-            // Normalize question for matching
-            const normalizedQuestion = question.toLowerCase();
-            
-            // Check for location recommendations
-            if (normalizedQuestion.includes('where') && (normalizedQuestion.includes('go') || normalizedQuestion.includes('visit') || normalizedQuestion.includes('travel'))) {
-                return "Based on your travel preferences, I'd recommend considering Japan for its blend of tradition and modernity, Portugal for amazing food and coastlines, or Costa Rica if you enjoy nature and adventure activities.";
-            }
-            
-            // Check for packing questions
-            if (normalizedQuestion.includes('pack') || normalizedQuestion.includes('bring') || normalizedQuestion.includes('what to take')) {
-                return "Always pack versatile clothing layers, comfortable shoes, a power adapter, photocopies of important documents, and any necessary medications. Don't forget to check the weather forecast for your destination!";
-            }
-            
-            // Check for budget questions
-            if (normalizedQuestion.includes('budget') || normalizedQuestion.includes('cost') || normalizedQuestion.includes('cheap') || normalizedQuestion.includes('expensive')) {
-                return "For budget-friendly destinations, consider Southeast Asia (Thailand, Vietnam), Eastern Europe (Hungary, Poland), or South America (Ecuador, Bolivia). To save money while traveling, try booking in advance, traveling during shoulder season, using public transportation, and eating where locals eat.";
-            }
-            
-            // Check for specific location questions
-            if (normalizedQuestion.includes('paris')) {
-                return "Paris is known for the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral. For the best experience, I recommend visiting in spring (April-June) or fall (September-October) to avoid crowds. Don't miss exploring the charming neighborhoods like Montmartre and Le Marais!";
-            }
-            
-            if (normalizedQuestion.includes('japan')) {
-                return "Japan offers an incredible mix of ancient traditions and cutting-edge technology. Visit during cherry blossom season (late March to early April) or fall foliage (November). Try to experience both Tokyo's energy and Kyoto's temples and gardens.";
-            }
-            
-            if (normalizedQuestion.includes('new york') || normalizedQuestion.includes('nyc')) {
-                return "New York City has iconic attractions like Central Park, Times Square, and the Empire State Building. For a local experience, explore neighborhoods like Greenwich Village or Brooklyn. The city is great year-round, but especially beautiful during the holiday season or spring.";
-            }
-            
-            // Check for safety questions
-            if (normalizedQuestion.includes('safe') || normalizedQuestion.includes('safety') || normalizedQuestion.includes('danger')) {
-                return "For safe travels, research your destination beforehand, keep copies of important documents, register with your embassy if traveling internationally, and purchase travel insurance. Trust your instincts and stay aware of your surroundings.";
-            }
-            
-            // Check for food questions
-            if (normalizedQuestion.includes('food') || normalizedQuestion.includes('eat') || normalizedQuestion.includes('cuisine') || normalizedQuestion.includes('restaurant')) {
-                return "For authentic food experiences, eat where locals eat, try street food in places with high turnover, visit local markets, and ask hotel staff for recommendations. Some of the world's best food destinations include Thailand, Italy, Japan, Mexico, and India.";
-            }
-            
-            // Default response
-            return "That's a great question about travel! In a fully implemented version, I would connect to a travel AI API to give you personalized recommendations. Is there anything specific about destinations, accommodations, or travel tips you'd like to know?";
-        }
+
+// Function to add a message to chat
+function addMessage(text, sender) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${sender}-message`;
+    messageElement.textContent = text;
+    chatContainer.appendChild(messageElement);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
         // Initialize the page
         displayJournalEntries();
@@ -1200,7 +1183,7 @@ function showPlaceInfo(place) {
 
 // Function to view a full journal entry from the map
 window.viewFullEntry = function(entryId) {
-    const entryElement = document.getElementById(entry-${entryId});
+    const entryElement = document.getElementById(`entry-${entryId}`);
     if (entryElement) {
         entryElement.scrollIntoView({ behavior: 'smooth' });
         // Highlight the entry briefly
